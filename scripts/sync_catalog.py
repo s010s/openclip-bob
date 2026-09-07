@@ -19,7 +19,8 @@ def run(*args, cwd=None):
 def main():
     if not os.environ.get('GH_TOKEN'):
         raise SystemExit('Configure the OPENCLIP_SYNC_TOKEN repository secret. Never pass credentials as workflow inputs.')
-    manifest = json.loads((ROOT / 'Bob.openclipext/openclip.json').read_text())
+    package_root = Path(os.environ.get('PACKAGE_ROOT', str(ROOT))).resolve()
+    manifest = json.loads((package_root / 'Bob.openclipext/openclip.json').read_text())
     version = manifest['version']
     if not re.fullmatch(r'\d+\.\d+\.\d+', version):
         raise SystemExit('Expected a stable semantic version.')
@@ -33,7 +34,9 @@ def main():
     with tempfile.TemporaryDirectory(prefix='bob-catalog-') as temp:
         checkout = Path(temp) / 'catalog'
         run('gh', 'repo', 'clone', FORK, str(checkout), '--', '--depth', '1')
-        run('git', 'remote', 'add', 'upstream', f'https://github.com/{UPSTREAM}.git', cwd=checkout)
+        remotes = run('git', 'remote', cwd=checkout).splitlines()
+        operation = 'set-url' if 'upstream' in remotes else 'add'
+        run('git', 'remote', operation, 'upstream', f'https://github.com/{UPSTREAM}.git', cwd=checkout)
         run('git', 'fetch', 'upstream', 'main', '--depth', '1', cwd=checkout)
         existing = run('git', 'ls-remote', '--heads', 'origin', f'refs/heads/{branch}', cwd=checkout)
         if existing:
@@ -44,7 +47,7 @@ def main():
         target = checkout / 'raw/Bob.openclipext'
         target.mkdir(parents=True, exist_ok=True)
         for name in FILES:
-            shutil.copyfile(ROOT / 'Bob.openclipext' / name, target / name)
+            shutil.copyfile(package_root / 'Bob.openclipext' / name, target / name)
         run('bash', 'scripts/validate.sh', 'raw/Bob.openclipext', cwd=checkout)
         run('git', 'config', 'user.name', 's010s', cwd=checkout)
         run('git', 'config', 'user.email', 's010s@users.noreply.github.com', cwd=checkout)
