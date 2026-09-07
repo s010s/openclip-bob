@@ -1,0 +1,43 @@
+name: Submit to OpenClip catalog
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Published stable release tag (for example v1.0.0)'
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: openclip-catalog-sync
+  cancel-in-progress: false
+jobs:
+  submit:
+    if: github.repository == 's010s/openclip-bob'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require a dedicated cross-repository credential
+        env:
+          SYNC_TOKEN: ${{ secrets.OPENCLIP_SYNC_TOKEN }}
+        run: |
+          if [ -z "$SYNC_TOKEN" ]; then
+            echo '::error::Add OPENCLIP_SYNC_TOKEN in repository Actions secrets. See MAINTAINING.md.'
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+          persist-credentials: false
+      - name: Authenticate Git transport
+        env:
+          GH_TOKEN: ${{ secrets.OPENCLIP_SYNC_TOKEN }}
+        run: |
+          gh config set git_protocol https
+          gh auth setup-git
+      - name: Validate, push release files, and open a pull request
+        env:
+          GH_TOKEN: ${{ secrets.OPENCLIP_SYNC_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: python3 scripts/sync_catalog.py
