@@ -59,9 +59,9 @@ def main():
                 raise SystemExit('Unexpected staged files; refusing to publish.')
             run('git', 'commit', '-m', f'Add/update Bob extension to {version}', cwd=checkout)
             run('git', 'push', 'origin', f'HEAD:refs/heads/{branch}', cwd=checkout)
-        prs = json.loads(run('gh', 'pr', 'list', '--repo', UPSTREAM, '--head', f's010s:{branch}', '--state', 'all', '--json', 'url,state'))
+        prs = json.loads(run('gh', 'api', f'repos/{UPSTREAM}/pulls', '--method', 'GET', '-f', f'head=s010s:{branch}', '-f', 'base=main', '-f', 'state=all'))
         if prs:
-            print(f'Existing PR ({prs[0]["state"]}): {prs[0]["url"]}; preserving reviewer discussion and body.')
+            print(f'Existing PR ({prs[0]["state"]}): {prs[0]["html_url"]}; preserving reviewer discussion and body.')
             return
         if not changed and not existing:
             print('Catalog already matches this release; no PR needed.')
