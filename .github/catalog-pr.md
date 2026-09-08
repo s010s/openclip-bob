@@ -22,22 +22,22 @@ I previously used PopClip mainly together with Bob for selected-text translation
 - Uses AppleScript because the action controls an installed macOS application. OpenClip's JavaScriptCore runtime does not itself provide JXA's `Application()` interface.
 - Requires Bob's Mac App Store edition (`com.hezongyidev.Bob`) and the normal first-use macOS permission for OpenClip to control Bob. No extra translation API key is required by the extension.
 - Returns an empty string after the request so OpenClip does not paste the API response into the selected document.
-- Provides a standard SF Symbol and English, Simplified Chinese, Traditional Chinese, French, and Japanese action metadata.
+- Bundles a dedicated monochrome Bob `icon.svg` with a square viewBox and `currentColor` styling, plus English, Simplified Chinese, Traditional Chinese, French, and Japanese action metadata.
 
 #### Privacy and licensing
 
 The extension makes no direct network requests, collects no analytics, and does not read or write the clipboard. Selected text is sent to Bob locally via Apple Events; Bob may then send it to the translation providers the user has configured. This does not change Bob's own license or provider requirements.
 
-The integration is independently implemented and MIT licensed. It does not copy the existing Bob–PopClip extension's code or bundle Bob's logo. The package README links to the independent source repository and issue tracker.
+The integration code is independently implemented and MIT licensed, with no copied Bob–PopClip integration code. The dedicated SVG is adapted from the Bob author's official PopClip icon; its original PNG, source attribution, and GPL-3.0 license are included separately. The package README links to the independent source repository and issue tracker.
 
 ### Validation
 
 - Tested on macOS with OpenClip **1.3.1** and Bob **1.20.0**. The working local prototype was installed by copying the package into the extension directory and enabling it in Actions; actual selection-to-translation behavior and the Automation prompt were confirmed manually.
-- Version 1.0.0 retains the tested AppleScript behavior and adds the permanent identifier, localized metadata, license, and distribution documentation. The identifier migration is documented for users of the local prototype.
+- The integration retains the tested AppleScript behavior, with the permanent identifier, localized metadata, license, and distribution documentation. Version 1.0.1 adds the dedicated Bob icon requested during review. The identifier migration is documented for users of the local prototype.
 - The official `scripts/validate.sh` passes for the submitted package.
 - Automated tests execute the production AppleScript JSON serializer without invoking Bob, covering Chinese, emoji, line breaks, carriage returns, tabs, quotes, backslashes, literal placeholders, and a 55,000-character input. The long-input check validates transport serialization, not translation-provider limits.
 - The complete script was also invoked with fixed sample text and exited successfully with empty output.
-- Only the four source package files are submitted under `raw/Bob.openclipext/`; generated `published/` assets are left to the catalog workflow.
+- Only the allowlisted source package files are submitted under `raw/Bob.openclipext/`; generated `published/` assets are left to the catalog workflow.
 
 ### Author Checklist
 
@@ -45,7 +45,7 @@ The integration is independently implemented and MIT licensed. It does not copy 
 - [x] Validated manifest and scripts with `./scripts/validate.sh raw/Bob.openclipext`.
 - [x] Uses a reverse-DNS identifier.
 - [x] Declares version {{VERSION}}.
-- [x] Uses a standard SF Symbol.
+- [x] Bundles `icon.svg` with square viewBox and monochrome/currentColor styling, plus source attribution and the icon license.
 - [x] Does not use `openclip.pasteboard`; declares conservative `minOpenClipVersion: "1.3.1"`.
 
 ### Maintenance

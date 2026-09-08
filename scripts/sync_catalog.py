@@ -11,7 +11,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM = 'ganeshmshetty/openclip-extensions'
 FORK = 's010s/openclip-extensions'
-FILES = ('openclip.json', 'translate.applescript', 'README.md', 'LICENSE')
+FILES = ('openclip.json', 'translate.applescript', 'README.md', 'LICENSE', 'icon.svg', 'icon-source.png', 'THIRD_PARTY_NOTICES.md', 'LICENSE.icon-GPL-3.0')
 
 def run(*args, cwd=None):
     return subprocess.check_output(args, cwd=cwd, text=True).strip()
