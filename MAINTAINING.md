@@ -2,7 +2,7 @@
 
 ## One source, two channels
 
-Keep the extension in `Bob.openclipext/`. Use the same identifier (`io.github.s010s.openclip.bob`), version, and four packaged files for independent releases and the official catalog. Never include internal working notes in a release or PR.
+Keep the extension in `Bob.openclipext/`. Use the same identifier (`io.github.s010s.openclip.bob`), version, and allowlisted package files for independent releases and the official catalog. Never include internal working notes in a release or PR.
 
 ## One-time automation setup
 
@@ -18,7 +18,7 @@ Forked copies of this project do not run the submission job. The workflow has re
 2. Run `python3 scripts/test.py` on macOS and the official catalog's `scripts/validate.sh Bob.openclipext`.
 3. Run `python3 scripts/package.py`. Inspect the staged files and ZIP contents before public publication.
 4. Commit and tag the reviewed source as `vX.Y.Z`, then publish a stable GitHub Release containing `dist/Bob.openclipext.zip` and `dist/SHA256SUMS`.
-5. The release event runs **Submit to OpenClip catalog**. The manifest version must match the release tag. The workflow uses the maintained synchronization script from main and copies package files only from the release-tag checkout, so automation fixes do not require moving a published tag. The script validates against the current upstream validator before pushing only the four extension files to `bob/vX.Y.Z` in the fork.
+5. The release event runs **Submit to OpenClip catalog**. The manifest version must match the release tag. The workflow uses the maintained synchronization script from main and copies package files only from the release-tag checkout, so automation fixes do not require moving a published tag. The script validates against the current upstream validator before pushing only the allowlisted extension files to `bob/vX.Y.Z` in the fork.
 6. Review CI and respond to maintainer feedback. Upstream review and merging remain human decisions. The workflow does not merge PRs.
 
 If the release was created through an API using a workflow's own GITHUB_TOKEN, GitHub may suppress follow-on workflow events. Manually dispatch the catalog workflow with the published tag in that case.

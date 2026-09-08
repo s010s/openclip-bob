@@ -6,7 +6,7 @@ import json
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-FILES = ('openclip.json', 'translate.applescript', 'README.md', 'LICENSE')
+FILES = ('openclip.json', 'translate.applescript', 'README.md', 'LICENSE', 'icon.svg', 'icon-source.png', 'THIRD_PARTY_NOTICES.md', 'LICENSE.icon-GPL-3.0')
 
 def main():
     package = ROOT / 'Bob.openclipext'
